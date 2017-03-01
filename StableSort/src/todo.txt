@@ -1,0 +1,24 @@
+test todo list:
+
+{} -> {}  [done]
+{1} -> {1} [done] //no change needed for this to work
+{1, 2} -> {1, 2} [done] //same for this
+{2, 1} -> {1, 2} [done]
+{1, 2, 3} -> {1, 2, 3} [done] //no change needed to go green
+{3, 1, 2} -> {1, 2, 3} [done] // required changes which transformed the code to a bubble sort
+{1, 2, 3, 4, 5, 6, 7, 8, 9, 0} -> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} [done]
+{8, 4, 6, 5, 2, 3, 7, 9, 1, 0} -> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} [done]
+//no change needed for last two hence I can assume the algorithm works for an arbitrary
+//input size. However, this algoroithm converged towards bubble sort so rather than
+//try to clean up the code, I'll attempt to use the test cases to guide
+//the development of a merge sort algorithm, before cleaning up the code.
+
+//these tests came in later; rather slopiliy forgot some important cases
+{1, 2, 3, 2} -> {1, 2, 2, 3} [done] //no change needed
+
+{Item[1, "red"], Item[2, "red"], Item[1, "black"]} -> {Item[1, "red"], Item[1, "black"], Item[2, "red"]} [done]
+//works without edits. need one more test to verify sort is complete
+
+
+{Item[1, "red"], Item[2, "red"], Item[3, "black"], Item[2, "black"], Item[2, "red"]} ->
+{Item[1, "red"], Item[2, "red"], Item[2, "black"], Item[2, "red"], Item[3, "black"]}
