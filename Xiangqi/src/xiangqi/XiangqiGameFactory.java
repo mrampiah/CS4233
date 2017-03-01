@@ -12,6 +12,7 @@
 
 package xiangqi;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import xiangqi.common.XiangqiGame;
 import xiangqi.common.XiangqiGameVersion;
 import xiangqi.studentekampiah.versions.alpha.AlphaXiangqiGame;
@@ -30,6 +31,16 @@ public class XiangqiGameFactory
 	 */
 	public static XiangqiGame makeXiangqiGame(XiangqiGameVersion version)
 	{
-		return version == XiangqiGameVersion.ALPHA_XQ? new AlphaXiangqiGame() : BetaXiangqiGame.makeBetaXiangqiGame();
+		switch (version){
+			case ALPHA_XQ:
+				return new AlphaXiangqiGame();
+			case BETA_XQ:
+				return BetaXiangqiGame.makeBetaXiangqiGame();
+			case GAMMA_XQ:
+				break;
+			case DELTA_XQ:
+		}
+
+		throw new NotImplementedException();
 	}
 }
