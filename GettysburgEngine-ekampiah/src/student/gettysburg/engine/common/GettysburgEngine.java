@@ -12,12 +12,9 @@
 package student.gettysburg.engine.common;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 import gettysburg.common.*;
 import gettysburg.common.exceptions.GbgInvalidActionException;
 import gettysburg.common.exceptions.GbgInvalidMoveException;
-import student.gettysburg.engine.exceptions.UnitNotFoundException;
 import student.gettysburg.engine.utility.configure.UnitInitializer;
 
 /**

@@ -12,9 +12,13 @@
 package gettysburg.engine.common;
 
 import java.util.List;
-import java.util.Map;
 
-import gettysburg.common.*;
+import gettysburg.common.BattleDescriptor;
+import gettysburg.common.BattleResult;
+import gettysburg.common.Direction;
+import gettysburg.common.GbgGameStep;
+import gettysburg.common.GbgUnit;
+import gettysburg.common.TestGbgGame;
 import student.gettysburg.engine.common.GettysburgEngine;
 import student.gettysburg.engine.utility.configure.UnitInitializer;
 
