@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import gettysburg.common.*;
 import gettysburg.common.exceptions.*;
+import student.gettysburg.engine.common.GettysburgEngine;
 
 /**
  * JUnit tests to be run against student projects.
@@ -52,6 +53,9 @@ public class Version1MasterTests
 		gamble.setFacing(WEST);
 		devin.setFacing(SOUTH);
 		heth.setFacing(EAST);
+
+		//so above changes don't interfere with real tests
+        ((GettysburgEngine) game).getBoard().resetFacingChanged();
 	}
 
 	@Test
@@ -334,6 +338,7 @@ public class Version1MasterTests
 	public void endMoveStepWhenNotInUnionMove()
 	{
 		game.endStep();		// to UBATTLE
+		assertEquals(GbgGameStep.UBATTLE, game.getCurrentStep());
 		doEndMoveStep();
 	}
 

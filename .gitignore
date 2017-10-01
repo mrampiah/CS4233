@@ -3,3 +3,6 @@ bin/*
 RemoteSystemsTempFiles/*
 
 */bin/*
+
+*/.idea/*
+*.iml

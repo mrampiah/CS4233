@@ -20,12 +20,12 @@ public class Board implements GbgBoard{
 	}
 	
 	public Board(List<UnitInitializer> config) {
-		board = new HashMap<Coordinate, Collection<GbgUnit>>();
+		board = new HashMap<>();
 		config.forEach(unit -> {
 			addUnit(unit.where, unit.unit);
 		});
 	}
-	
+
 	public void move(GbgUnit unit, Coordinate from, Coordinate to) {
 		removeUnit(from, unit);
 		addUnit(to, unit);
@@ -34,10 +34,10 @@ public class Board implements GbgBoard{
 	public void addUnit(Coordinate where, GbgUnit unit) {
 		Collection<GbgUnit> previous = board.get(where);
 		if(previous == null)
-			previous = new HashSet<GbgUnit>();
+			previous = new HashSet<>();
 		
 		if(previous.contains(unit))
-			previous.remove(unit);
+            previous.remove(unit);
 		
 		previous.add(unit);
 		board.put(where, previous);
@@ -64,15 +64,22 @@ public class Board implements GbgBoard{
 	}
 	
 	public GbgUnit findUnit(GbgUnit unit) {
-		do {
-			Collection<GbgUnit> set = board.values().iterator().next();
-			if(set.contains(unit)) {
-				List<GbgUnit> helper = set.stream().collect(Collectors.toList());
-				return helper.get(helper.indexOf(unit));
-			}			
-		}while(board.values().iterator().hasNext()) ;
-		
+        for (Collection<GbgUnit> set : board.values()) {
+            if(set.contains(unit)) {
+                List<GbgUnit> helper = set.stream().collect(Collectors.toList());
+                return helper.get(helper.indexOf(unit));
+            }
+        }
 		return null;
 	}
+
+    /**
+     * After each turn, use this method to reset tracking of changed direction
+     */
+	public void resetFacingChanged(){
+	    board.values().forEach(set -> {
+	        set.forEach(unit -> ((GbgUnitImpl) unit).setFacingChanged(false));
+        });
+    }
 	
 }

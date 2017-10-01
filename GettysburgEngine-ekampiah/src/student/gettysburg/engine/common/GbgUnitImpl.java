@@ -30,6 +30,7 @@ public class GbgUnitImpl implements GbgUnit
 	private int movementFactor;
 	private UnitSize unitSize;
 	private UnitType unitType;
+	private boolean moved, facingChanged;
 	
 	/**
 	 * Default constructor needed for JSON processing. When creating
@@ -44,6 +45,8 @@ public class GbgUnitImpl implements GbgUnit
 		movementFactor = 0;
 		unitSize = null;
 		unitType = null;
+		moved = false;
+		facingChanged = false;
 	}
 	
 	public GbgUnitImpl(String leader, ArmyID army) {
@@ -59,7 +62,6 @@ public class GbgUnitImpl implements GbgUnit
 	 * @param facing
 	 * @param leader
 	 * @param movementFactor
-	 * @param name
 	 * @param unitSize
 	 * @param unitType
 	 * @return the unitImpl
@@ -111,8 +113,8 @@ public class GbgUnitImpl implements GbgUnit
 	@Override
 	public void setFacing(Direction newFacing)
 	{
-		// TODO Auto-generated method stub
-		
+		this.facing = newFacing;
+		setFacingChanged(true);
 	}
 
 	/*
@@ -159,9 +161,25 @@ public class GbgUnitImpl implements GbgUnit
 		return armyID;
 	}
 
-	/*
-	 * @see java.lang.Object#hashCode()
-	 */
+    public boolean isMoved() {
+        return moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
+    public boolean isFacingChanged() {
+        return facingChanged;
+    }
+
+    public void setFacingChanged(boolean facingChanged) {
+        this.facingChanged = facingChanged;
+    }
+
+    /*
+         * @see java.lang.Object#hashCode()
+         */
 	@Override
 	public int hashCode()
 	{
