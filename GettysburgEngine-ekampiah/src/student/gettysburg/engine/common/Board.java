@@ -50,7 +50,8 @@ public class Board implements GbgBoard{
 	}
 		
 	public Collection<GbgUnit> getUnitsAt(Coordinate where){
-		return board.get(where);
+		Collection<GbgUnit> units = board.get(where);
+		return units.isEmpty()? null : units ;
 	}
 	
 	public Coordinate getUnitLocation(GbgUnit unit) {

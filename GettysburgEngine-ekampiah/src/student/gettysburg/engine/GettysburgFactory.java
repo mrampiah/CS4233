@@ -98,7 +98,7 @@ public final class GettysburgFactory
 	 */
 	public static Coordinate makeCoordinate(int x, int y)
 	{
-		throw new GbgNotImplementedException("makeCoordinate()");
+		return CoordinateImpl.makeCoordinate(x, y);
 	}
 	
 	/**

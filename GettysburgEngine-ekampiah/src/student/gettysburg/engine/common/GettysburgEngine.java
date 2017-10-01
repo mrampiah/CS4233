@@ -15,71 +15,91 @@ import java.util.*;
 import gettysburg.common.*;
 import gettysburg.common.exceptions.GbgInvalidActionException;
 import gettysburg.common.exceptions.GbgInvalidMoveException;
+import gettysburg.common.exceptions.GbgNotImplementedException;
 import student.gettysburg.engine.utility.configure.UnitInitializer;
 
 /**
  * This is the game engine master class that provides the interface to the game
  * implementation. DO NOT change the name of this file and do not change the
- * name ofthe methods that are defined here since they must be defined to implement the
- * GbgGame interface.
+ * name ofthe methods that are defined here since they must be defined to
+ * implement the GbgGame interface.
  * 
  * @version Jun 9, 2017
  */
-public class GettysburgEngine implements GbgGame
-{
-	private String version;
-//	private Map<Coordinate, GbgUnit> board;
+public class GettysburgEngine implements GbgGame {
+	// private Map<Coordinate, GbgUnit> board;
 	private Board board;
 	private int turn = 0;
-	private List<UnitInitializer> config;
 	private GbgGameStep step;
-	
-	public GettysburgEngine (String version, List<UnitInitializer> config) {
-		this.version = version;
-//		board = new HashMap<Coordinate, GbgUnit>(units);
+
+	public GettysburgEngine(String version, List<UnitInitializer> config) {
+		// board = new HashMap<Coordinate, GbgUnit>(units);
 		board = new Board(config);
-		
+
 		turn = 1;
-		step = GbgGameStep.UMOVE; //start on union move
-		
-		//for now, save config for convenience
-		this.config = config;
+		step = GbgGameStep.UMOVE; // start on union move
 	}
 
 	/*
 	 * @see gettysburg.common.GbgGame#endBattleStep()
 	 */
 	@Override
-	public void endBattleStep()
-	{
-		throw new GbgInvalidActionException("can't end battle step yet");
+	public void endBattleStep() {
+		if(step == GbgGameStep.UBATTLE)
+			step = GbgGameStep.CMOVE;
+		
+		//todo: check end game conditions, etc
+		//but for now..
+		if(step == GbgGameStep.CBATTLE)
+			step = GbgGameStep.GAME_OVER;
 	}
 
 	/*
 	 * @see gettysburg.common.GbgGame#endMoveStep()
 	 */
 	@Override
-	public void endMoveStep()
-	{
-		step = GbgGameStep.GAME_OVER;
+	public void endMoveStep() {
+		//check if on move
+		if(step == GbgGameStep.UBATTLE ||  step == GbgGameStep.CBATTLE)
+			throw new GbgNotImplementedException("Invalid move");
+		
+		System.out.printf("move: %s", step);
+		//change to appropriate battle
+		if(step == GbgGameStep.UMOVE)
+			step = GbgGameStep.UBATTLE;
+		else if(step == GbgGameStep.CMOVE) 
+			step = GbgGameStep.CBATTLE;
 	}
 
 	/*
 	 * @see gettysburg.common.GbgGame#endStep()
 	 */
 	@Override
-	public GbgGameStep endStep()
-	{
-		// TODO Auto-generated method stub
-		return null;
+	public GbgGameStep endStep() {
+		turn++;
+		switch (step) {
+		case CBATTLE:
+		case UBATTLE:
+			endBattleStep();
+			break;
+		case CMOVE:
+		case UMOVE:
+			endMoveStep();
+			break;
+		case GAME_OVER:
+			break;
+		default:
+			break;
+		}
+
+		return step;
 	}
 
 	/*
 	 * @see gettysburg.common.GbgGame#getBattlesToResolve()
 	 */
 	@Override
-	public Collection<BattleDescriptor> getBattlesToResolve()
-	{
+	public Collection<BattleDescriptor> getBattlesToResolve() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -88,36 +108,33 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#getCurrentStep()
 	 */
 	@Override
-	public GbgGameStep getCurrentStep()
-	{
+	public GbgGameStep getCurrentStep() {
 		return step;
 	}
-	
+
 	/*
 	 * @see gettysburg.common.GbgGame#getGameStatus()
 	 */
 	@Override
-	public GbgGameStatus getGameStatus()
-	{
+	public GbgGameStatus getGameStatus() {
 		return GbgGameStatus.IN_PROGRESS;
 	}
-	
+
 	/*
 	 * @see gettysburg.common.GbgGame#getGameDate()
 	 */
 	@Override
-	public Calendar getGameDate()
-	{
+	public Calendar getGameDate() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/*
-	 * @see gettysburg.common.GbgGame#getSquareDescriptor(gettysburg.common.Coordinate)
+	 * @see
+	 * gettysburg.common.GbgGame#getSquareDescriptor(gettysburg.common.Coordinate)
 	 */
 	@Override
-	public GbgSquareDescriptor getSquareDescriptor(Coordinate where)
-	{
+	public GbgSquareDescriptor getSquareDescriptor(Coordinate where) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -126,8 +143,7 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#getTurnNumber()
 	 */
 	@Override
-	public int getTurnNumber()
-	{
+	public int getTurnNumber() {
 		return turn;
 	}
 
@@ -135,8 +151,7 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#getUnitFacing(int)
 	 */
 	@Override
-	public Direction getUnitFacing(GbgUnit unit)
-	{
+	public Direction getUnitFacing(GbgUnit unit) {
 		return board.findUnit(unit).getFacing();
 	}
 
@@ -144,39 +159,38 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#getUnitsAt(gettysburg.common.Coordinate)
 	 */
 	@Override
-	public Collection<GbgUnit> getUnitsAt(Coordinate where)
-	{
+	public Collection<GbgUnit> getUnitsAt(Coordinate where) {
 		return board.getUnitsAt(where);
 	}
 
 	/*
-	 * @see gettysburg.common.GbgGame#moveUnit(gettysburg.common.GbgUnit, gettysburg.common.Coordinate, gettysburg.common.Coordinate)
+	 * @see gettysburg.common.GbgGame#moveUnit(gettysburg.common.GbgUnit,
+	 * gettysburg.common.Coordinate, gettysburg.common.Coordinate)
 	 */
 	@Override
-	public void moveUnit(GbgUnit unit, Coordinate from, Coordinate to)
-	{
-		if(validMove(unit, from, to))
+	public void moveUnit(GbgUnit unit, Coordinate from, Coordinate to) {
+		if (validMove(unit, from, to))
 			board.move(unit, from, to);
 		else
-			throw new GbgInvalidMoveException(String.format("Unable to move %s to (%d, %d)", unit.getLeader(), 
-					to.getX(), to.getY()));
+			throw new GbgInvalidMoveException(
+					String.format("Unable to move %s to (%d, %d)", unit.getLeader(), to.getX(), to.getY()));
 	}
-	
+
 	private boolean validMove(GbgUnit unit, Coordinate from, Coordinate to) {
 		boolean destinationOnBoard = to.getX() <= board.COLUMNS && to.getY() <= board.ROWS;
 		boolean notEqual = !from.equals(to);
 		boolean validDistance = unit.getMovementFactor() >= from.distanceTo(to);
 		boolean noUnits = noUnitsPresent(to);
-		boolean matchingUnit = (unit.getArmy() == ArmyID.UNION && step == GbgGameStep.UMOVE) || 
-				(unit.getArmy() == ArmyID.CONFEDERATE && step == GbgGameStep.CMOVE);
-		
-	return destinationOnBoard && notEqual && validDistance && noUnits && matchingUnit;
+		boolean matchingUnit = (unit.getArmy() == ArmyID.UNION && step == GbgGameStep.UMOVE)
+				|| (unit.getArmy() == ArmyID.CONFEDERATE && step == GbgGameStep.CMOVE);
+
+		return destinationOnBoard && notEqual && validDistance && noUnits && matchingUnit;
 	}
-	
-	private boolean noUnitsPresent(Coordinate coord) {	
+
+	private boolean noUnitsPresent(Coordinate coord) {
 		try {
 			return getUnitsAt(coord).isEmpty();
-		}catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 			return true;
 		}
 	}
@@ -185,18 +199,17 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#resolveBattle(int)
 	 */
 	@Override
-	public BattleResolution resolveBattle(BattleDescriptor battle)
-	{
+	public BattleResolution resolveBattle(BattleDescriptor battle) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/*
-	 * @see gettysburg.common.GbgGame#setUnitFacing(gettysburg.common.GbgUnit, gettysburg.common.Direction)
+	 * @see gettysburg.common.GbgGame#setUnitFacing(gettysburg.common.GbgUnit,
+	 * gettysburg.common.Direction)
 	 */
 	@Override
-	public void setUnitFacing(GbgUnit unit, Direction direction)
-	{
+	public void setUnitFacing(GbgUnit unit, Direction direction) {
 		unit.setFacing(direction);
 		board.addUnit(whereIsUnit(unit), unit);
 	}
@@ -205,17 +218,16 @@ public class GettysburgEngine implements GbgGame
 	 * @see gettysburg.common.GbgGame#whereIsUnit(gettysburg.common.GbgUnit)
 	 */
 	@Override
-	public Coordinate whereIsUnit(GbgUnit unit)
-	{
+	public Coordinate whereIsUnit(GbgUnit unit) {
 		return board.getUnitLocation(unit);
 	}
 
 	/*
-	 * @see gettysburg.common.GbgGame#whereIsUnit(java.lang.String, gettysburg.common.ArmyID)
+	 * @see gettysburg.common.GbgGame#whereIsUnit(java.lang.String,
+	 * gettysburg.common.ArmyID)
 	 */
 	@Override
-	public Coordinate whereIsUnit(String leader, ArmyID army)
-	{
+	public Coordinate whereIsUnit(String leader, ArmyID army) {
 		return whereIsUnit(new GbgUnitImpl(leader, army));
 	}
 
