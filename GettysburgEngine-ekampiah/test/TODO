@@ -1,0 +1,68 @@
+* adjacency
+- with (3, 3)
+  valid:
+    - (3, 2)
+    - (3, 4)
+    - (4, 3)
+    - (4, 2)
+    - (2, 2)
+    - (4, 4)
+    - (2, 4)
+  invalid: all else eg,
+    - (2, 15)
+    - (10, 2)
+    - (5, 11)
+
+
+* zone of control
+- always size 3
+- with (devin at (13, 9) facing SOUTH)
+  valid:
+    - (12, 10)
+    - (13, 10)
+    - (14, 10)
+  invalid: all else eg
+    - (1, 3)
+    - (13, 9)
+    - (12 9)
+- with (heth at (8, 8) facing EAST)
+  valid:
+    - (9, 7)
+    - (9, 8)
+    - (9, 9)
+  invalid: all else eg
+    - (8, 8)
+    - (8, 9)
+    - (7, 8)
+
+
+
+
+* units occupying entry point = removed
+* no stacked units at end of movement step
+* any attempt to stack = GbgInvalidMoveException. eg. move into occupied square
+* no passing through zone of control
+* valid move from v1
+* must call getBattlesToResolve at the end of movement step...else GbgInvalidActionException
+* multiple calls to getBattlesToResolve and resolveBattle
+* ensure piece can only battle once per turn (A&D)
+* AELIM/DELIM = all units removed
+*** unit may occupy in this case
+* EXCHANGE lower end units removed, other remove units with equal or more combat factor
+
+
+
+
+
+notes:
+* battle resolution:
+*** sum combat factors of A & D
+*** compute odds = A/D
+*** odds >= 2.0 -> DELIM
+*** 0.5 < odds & odds < 2.0 -> EXCHANGE
+*** odds <= 0.5 -> AELIM
+
+* ability to choose battle order
+* must resolve against every enemy unit within ZOC of at least one attacking unit
+* varies based on facing (not in v2)
+* total attack/defense factors

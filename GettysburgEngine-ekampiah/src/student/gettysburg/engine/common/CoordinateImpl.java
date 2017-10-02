@@ -67,8 +67,8 @@ public class CoordinateImpl implements Coordinate {
 
 		boolean north = y > coordinate.getY();
 		boolean south = y < coordinate.getY();
-		boolean east = x > coordinate.getX();
-		boolean west = x < coordinate.getX();
+		boolean east = x < coordinate.getX();
+		boolean west = x > coordinate.getX();
 
 		if (north) {
 			if (x == coordinate.getX())
@@ -105,7 +105,8 @@ public class CoordinateImpl implements Coordinate {
 		 * diagonally, until orthogonal - sum diagonal steps with orthogonal steps
 		 */
 //		return Math.abs(x - coordinate.getX()) + Math.abs(y - coordinate.getY());
-		return countStepsTo(this, coordinate);
+		int steps = countStepsTo(this, coordinate);
+		return steps;
 	}
 	
 	public static int countStepsTo(Coordinate from, Coordinate to) {
@@ -119,13 +120,13 @@ public class CoordinateImpl implements Coordinate {
 		case SOUTH:
 			return Math.abs(from.getY() - to.getY());
 		case NORTHEAST:
-			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() - 1, from.getY() - 1), to);
-		case NORTHWEST:
 			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() + 1, from.getY() - 1), to);
+		case NORTHWEST:
+			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() - 1, from.getY() - 1), to);
 		case SOUTHEAST:
-			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() - 1, from.getY() + 1), to);
-		case SOUTHWEST:
 			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() + 1, from.getY() + 1), to);
+		case SOUTHWEST:
+			return 1 + countStepsTo(CoordinateImpl.makeCoordinate(from.getX() - 1, from.getY() + 1), to);
 		default:
 			return 0;		
 		}

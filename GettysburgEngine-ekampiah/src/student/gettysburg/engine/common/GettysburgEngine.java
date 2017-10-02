@@ -12,7 +12,11 @@
 package student.gettysburg.engine.common;
 
 import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import gettysburg.common.*;
 import gettysburg.common.exceptions.GbgInvalidActionException;
 import gettysburg.common.exceptions.GbgInvalidMoveException;
@@ -182,6 +186,49 @@ public class GettysburgEngine implements GbgGame {
         return board.getUnitsAt(where);
     }
 
+
+    public Collection<Coordinate> getZoneOfControl(GbgUnit unit){
+        Coordinate where = board.getUnitLocation(unit);
+        switch(unit.getFacing()){
+            case NORTH:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1),//NW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1)); //NE
+            case NORTHEAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1), //NE
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY())); //e
+            case EAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() ), //E
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1), //NE
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTHEAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() ), //E
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTH:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1 ), //SW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTHWEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1 ), //SW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case WEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1 ), //SW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1), //NW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case NORTHWEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1 ), //N
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1), //NW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case NONE:
+                break;
+        }
+
+        throw new IllegalArgumentException("Unable to get zone of control");
+    }
+
     /*
      * @see gettysburg.common.GbgGame#moveUnit(gettysburg.common.GbgUnit,
      * gettysburg.common.Coordinate, gettysburg.common.Coordinate)
@@ -190,7 +237,7 @@ public class GettysburgEngine implements GbgGame {
     public void moveUnit(GbgUnit unit, Coordinate from, Coordinate to) {
         if(movedUnits.contains(unit))
             throw new GbgInvalidMoveException("Already moved unit");
-        if (validMove(unit, from, to)) {
+        if (RuleEngine.validateMove(this, unit, from, to)) {
             board.move(unit, from, to);
             movedUnits.add(unit);
         }else
@@ -198,25 +245,16 @@ public class GettysburgEngine implements GbgGame {
                     String.format("Unable to move %s to (%d, %d)", unit.getLeader(), to.getX(), to.getY()));
     }
 
-    private boolean validMove(GbgUnit unit, Coordinate from, Coordinate to) {
-        boolean destinationOnBoard = to.getX() <= board.COLUMNS && to.getY() <= board.ROWS;
-        boolean notEqual = !from.equals(to);
-        boolean validDistance = unit.getMovementFactor() >= from.distanceTo(to);
-        boolean noUnitsAtSource = noUnitsPresent(from);
-        boolean noUnitsAtDest = noUnitsPresent(to);
-        boolean matchingUnit = (unit.getArmy() == ArmyID.UNION && step == GbgGameStep.UMOVE)
-                || (unit.getArmy() == ArmyID.CONFEDERATE && step == GbgGameStep.CMOVE);
+    public void findPath(GbgUnit unit, Coordinate from, Coordinate to){
+        boolean complete = false;
+        int steps = 0;
 
-        return destinationOnBoard && notEqual && validDistance && !noUnitsAtSource && noUnitsAtDest && matchingUnit;
-    }
+        while(steps < unit.getMovementFactor()){
 
-    private boolean noUnitsPresent(Coordinate coord) {
-        try {
-            return getUnitsAt(coord).isEmpty();
-        } catch (NullPointerException e) {
-            return true;
+            steps++;
         }
     }
+
 
     /*
      * @see gettysburg.common.GbgGame#resolveBattle(int)
@@ -262,6 +300,11 @@ public class GettysburgEngine implements GbgGame {
     @Override
     public Coordinate whereIsUnit(String leader, ArmyID army) {
         return whereIsUnit(new GbgUnitImpl(leader, army));
+    }
+
+    @Override
+    public GbgUnit getUnit(String leader, ArmyID army) {
+        return board.findUnit(new GbgUnitImpl(leader, army));
     }
 
     public Board getBoard() {

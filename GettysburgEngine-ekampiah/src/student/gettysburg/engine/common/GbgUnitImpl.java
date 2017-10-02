@@ -30,7 +30,7 @@ public class GbgUnitImpl implements GbgUnit
 	private int movementFactor;
 	private UnitSize unitSize;
 	private UnitType unitType;
-	private boolean moved, facingChanged;
+	private boolean facingChanged;
 	
 	/**
 	 * Default constructor needed for JSON processing. When creating
@@ -45,7 +45,6 @@ public class GbgUnitImpl implements GbgUnit
 		movementFactor = 0;
 		unitSize = null;
 		unitType = null;
-		moved = false;
 		facingChanged = false;
 	}
 	
@@ -152,22 +151,6 @@ public class GbgUnitImpl implements GbgUnit
 	{
 		return unitType;
 	}
-
-	/**
-	 * @return the armyID
-	 */
-	public ArmyID getArmyID()
-	{
-		return armyID;
-	}
-
-    public boolean isMoved() {
-        return moved;
-    }
-
-    public void setMoved(boolean moved) {
-        this.moved = moved;
-    }
 
     public boolean isFacingChanged() {
         return facingChanged;
