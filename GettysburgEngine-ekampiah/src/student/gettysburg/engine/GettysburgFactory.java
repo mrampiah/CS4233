@@ -36,31 +36,9 @@ public final class GettysburgFactory
 	 */
 	public static GbgGame makeGame()
 	{
-		//create units and add
-		List<UnitInitializer> config = new LinkedList<UnitInitializer>();
-		config.add(new UnitInitializer(0, 11, 11, ArmyID.UNION, 1, WEST, "Gamble", 4, BRIGADE, CAVALRY));//gamble
-		config.add(new UnitInitializer(0, 13, 9, ArmyID.UNION, 1, SOUTH, "Devin", 4, BRIGADE, CAVALRY));//devin
-		config.add(new UnitInitializer(0, 8, 8, ArmyID.CONFEDERATE, 1, EAST, "Heth", 4, BRIGADE, CAVALRY));//heth
-				
-		return new GettysburgEngine("alpha", config);
+		return new GettysburgEngine();
 	}
 	
-	
-	/**
-	 * Creation for a new Gettysburg game instance. In this case the
-	 * client can specify a version, such as "alpha", or some other
-	 * string that indicates that a version of the game with limited
-	 * or extended capabilities should be produced. The valid version
-	 * strings are defined by the instructor for the course. If the
-	 * string is invalid, throw a GbgNotImplementedException.
-	 * 
-	 * @param version the version to create
-	 * @return an instance of the specific version of the Gettysburg game
-	 */
-	public static GbgGame makeGame(String version)
-	{
-		throw new GbgNotImplementedException("makeGame()");
-	}
 	/**
 	 * Creation method for a test Gettysburg game
 	 * @return the TestGbgGame instance
@@ -69,24 +47,7 @@ public final class GettysburgFactory
 	{
 		throw new GbgNotImplementedException("makeTestGame()");
 	}
-	
-	
-	/**
-	 * Creation for a new Gettysburg  test game instance. In this case the
-	 * client can specify a version, such as "alpha", or some other
-	 * string that indicates that a version of the game with limited
-	 * or extended capabilities should be produced. The valid version
-	 * strings are defined by the instructor for the course. If the
-	 * string is invalid, throw a GbgNotImplementedException.
-	 * 
-	 * @param version the version to create
-	 * @return an instance of the specific version of the Gettysburg game
-	 */
-	public static GbgGame makeTestGame(String version)
-	{
-		throw new GbgNotImplementedException("makeGame()");
-	}
-	
+
 	/**
 	 * Factory method for creating Coordinates. This method makes a Coordinate
 	 * instance that is used by the GettysburgEngine implementation and internal

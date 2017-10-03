@@ -6,12 +6,14 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Copyright ©2016-2017 Gary F. Pollice
  *******************************************************************************/
 package student.gettysburg.engine.common;
 
 import java.util.Collection;
+import java.util.HashSet;
+
 import gettysburg.common.*;
 
 /**
@@ -19,29 +21,32 @@ import gettysburg.common.*;
  * a factory method that creates a battle unit. The constructor and
  * is up to the implementor and additional methods may be added as
  * necessary for the student's design needs.
- * 
+ *
  * @version Jul 27, 2017
  */
-public class BattleDescriptorImpl implements BattleDescriptor
-{
-	/*
-	 * @see gettysburg.common.BattleDescriptor#getAttackers()
-	 */
-	@Override
-	public Collection<GbgUnit> getAttackers()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+public class BattleDescriptorImpl implements BattleDescriptor {
+    private Collection<GbgUnit> attackers, defenders;
 
-	/*
-	 * @see gettysburg.common.BattleDescriptor#getDefenders()
-	 */
-	@Override
-	public Collection<GbgUnit> getDefenders()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public BattleDescriptorImpl(Collection<GbgUnit> attackers, Collection<GbgUnit> defenders) {
+        this.attackers = attackers;
+        this.defenders = defenders;
+    }
+
+    /*
+             * @see gettysburg.common.BattleDescriptor#getAttackers()
+             */
+    @Override
+    public Collection<GbgUnit> getAttackers() {
+        return attackers;
+    }
+
+    /*
+     * @see gettysburg.common.BattleDescriptor#getDefenders()
+     */
+    @Override
+    public Collection<GbgUnit> getDefenders() {
+        return defenders;
+    }
+
 
 }

@@ -30,7 +30,7 @@ public class GbgUnitImpl implements GbgUnit
 	private int movementFactor;
 	private UnitSize unitSize;
 	private UnitType unitType;
-	private boolean facingChanged;
+	private boolean facingChanged, battled;
 	
 	/**
 	 * Default constructor needed for JSON processing. When creating
@@ -46,6 +46,7 @@ public class GbgUnitImpl implements GbgUnit
 		unitSize = null;
 		unitType = null;
 		facingChanged = false;
+		battled = false;
 	}
 	
 	public GbgUnitImpl(String leader, ArmyID army) {
@@ -116,9 +117,9 @@ public class GbgUnitImpl implements GbgUnit
 		setFacingChanged(true);
 	}
 
-	/*
-	 * @see gettysburg.common.GbgUnit#getLeader()
-	 */
+    /*
+         * @see gettysburg.common.GbgUnit#getLeader()
+         */
 	@Override
 	public String getLeader()
 	{
@@ -158,6 +159,14 @@ public class GbgUnitImpl implements GbgUnit
 
     public void setFacingChanged(boolean facingChanged) {
         this.facingChanged = facingChanged;
+    }
+
+    public boolean isBattled() {
+        return battled;
+    }
+
+    public void setBattled(boolean battled) {
+        this.battled = battled;
     }
 
     /*

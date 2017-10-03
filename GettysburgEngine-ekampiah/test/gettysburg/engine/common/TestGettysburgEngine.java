@@ -19,7 +19,9 @@ import gettysburg.common.Direction;
 import gettysburg.common.GbgGameStep;
 import gettysburg.common.GbgUnit;
 import gettysburg.common.TestGbgGame;
+import student.gettysburg.engine.common.CoordinateImpl;
 import student.gettysburg.engine.common.GettysburgEngine;
+import student.gettysburg.engine.common.RuleEngine;
 import student.gettysburg.engine.utility.configure.UnitInitializer;
 
 /**
@@ -28,9 +30,16 @@ import student.gettysburg.engine.utility.configure.UnitInitializer;
  */
 public class TestGettysburgEngine extends GettysburgEngine implements TestGbgGame
 {
-	public TestGettysburgEngine(String version, List<UnitInitializer> config) {
-		super(version, config);
+    GettysburgEngine game;
+
+	public TestGettysburgEngine() {
+		super();
 	}
+
+	public TestGettysburgEngine(GettysburgEngine game){
+	    this();
+	    this.game = game;
+    }
 
 	/*
 	 * @see gettysburg.common.TestGbgGame#clearBoard()
@@ -38,8 +47,7 @@ public class TestGettysburgEngine extends GettysburgEngine implements TestGbgGam
 	@Override
 	public void clearBoard()
 	{
-		// TODO Auto-generated method stub
-
+	    board.clear();
 	}
 
 	/*
@@ -48,8 +56,8 @@ public class TestGettysburgEngine extends GettysburgEngine implements TestGbgGam
 	@Override
 	public void putUnitAt(GbgUnit arg0, int arg1, int arg2, Direction arg3)
 	{
-		// TODO Auto-generated method stub
-
+		arg0.setFacing(arg3);
+		board.setUnit(CoordinateImpl.makeCoordinate(arg1, arg2), arg0);
 	}
 
 	/*
@@ -68,8 +76,7 @@ public class TestGettysburgEngine extends GettysburgEngine implements TestGbgGam
 	@Override
 	public void setGameStep(GbgGameStep arg0)
 	{
-		// TODO Auto-generated method stub
-
+	    game.setCurrentStep(arg0);
 	}
 
 	/*
@@ -78,8 +85,6 @@ public class TestGettysburgEngine extends GettysburgEngine implements TestGbgGam
 	@Override
 	public void setGameTurn(int arg0)
 	{
-		// TODO Auto-generated method stub
-
+	    game.setTurn(arg0);
 	}
-
 }

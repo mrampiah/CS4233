@@ -16,6 +16,9 @@ import gettysburg.common.Direction;
 import gettysburg.common.UnitSize;
 import gettysburg.common.UnitType;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static gettysburg.common.ArmyID.CONFEDERATE;
 import static gettysburg.common.ArmyID.UNION;
 import static gettysburg.common.Direction.*;
@@ -29,7 +32,7 @@ import static gettysburg.common.UnitType.*;
  */
 public class BattleOrder
 {
-	private static UnitInitializer[] confederateBattleOrder = {
+    private static List<UnitInitializer> confederateBattleOrder = Arrays.asList(
 			mcu(0, 8, 8, 4, EAST, "Heth", 2, DIVISION, INFANTRY), // Turn 0: start of game
 			mcu(2, 1, 5, 0, EAST, "Hill", 8, ARMY, HQ), // Turn 2: 7/1 0700
 			mcu(2, 1, 5, 4, EAST, "Pender", 2, DIVISION, INFANTRY),
@@ -56,11 +59,11 @@ public class BattleOrder
 			mcu(21, 16, 1, 1, SOUTH, "Jenkins", 4, BRIGADE, CAVALRY),
 			mcu(23, 1, 5, 1, EAST, "Imboden", 4, BRIGADE, CAVALRY), // Turn 23: 7/2 1400
 			mcu(23, 1, 5, 1, EAST, "Robertson", 4, BRIGADE, CAVALRY),
-			mcu(23, 1, 5, 1, EAST, "Jones", 4, BRIGADE, CAVALRY),
-	};
+			mcu(23, 1, 5, 1, EAST, "Jones", 4, BRIGADE, CAVALRY)
+            );
 	
-	private static UnitInitializer[] unionBattleOrder = {
-			muu(0, 11, 11, 1, WEST, "Gamble", 4, BRIGADE, CAVALRY), // Turn 0: start of game
+	private static List<UnitInitializer> unionBattleOrder = Arrays.asList(
+    muu(0, 11, 11, 1, WEST, "Gamble", 4, BRIGADE, CAVALRY), // Turn 0: start of game
 			muu(0, 13, 9, 1, SOUTH, "Devin", 4, BRIGADE, CAVALRY),
 			muu(0, 7, 28, 0, NORTHEAST, "Reynolds", 8, ARMY, HQ),
 			muu(0, 7, 28, 3, NORTHEAST, "Wadsworth", 2, DIVISION, INFANTRY),
@@ -100,15 +103,15 @@ public class BattleOrder
 			muu(21, 22, 22, 3, NORTHWEST, "Wirght", 2, DIVISION, INFANTRY),
 			muu(21, 22, 22, 3, NORTHWEST, "Howe", 2, DIVISION, INFANTRY),
 			muu(21, 22, 22, 3, NORTHWEST, "Newton", 2, DIVISION, INFANTRY),
-			muu(31, 7, 28, 3, NORTHEAST, "Merritt", 2, DIVISION, INFANTRY), // Turn 31: 7/3 0800
-	};
+			muu(31, 7, 28, 3, NORTHEAST, "Merritt", 2, DIVISION, INFANTRY)// Turn 31: 7/3 0800
+    );
 	
-	public static UnitInitializer[] getConfederateBattleOrder()
+	public static List<UnitInitializer> getConfederateBattleOrder()
 	{
 		return confederateBattleOrder;
 	}
 	
-	public static UnitInitializer[] getUnionBattleOrder()
+	public static List<UnitInitializer> getUnionBattleOrder()
 	{
 		return unionBattleOrder;
 	}

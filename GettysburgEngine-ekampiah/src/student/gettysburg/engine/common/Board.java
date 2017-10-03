@@ -3,27 +3,28 @@ package student.gettysburg.engine.common;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import gettysburg.common.Coordinate;
-import gettysburg.common.GbgBoard;
-import gettysburg.common.GbgUnit;
+import gettysburg.common.*;
 import gettysburg.common.exceptions.GbgInvalidCoordinateException;
+import gettysburg.common.exceptions.GbgInvalidMoveException;
 import student.gettysburg.engine.utility.configure.UnitInitializer;
 
 public class Board implements GbgBoard {
     private Map<Coordinate, Collection<GbgUnit>> board;
 
-    public Board(List<UnitInitializer> config) {
+    public Board() {
         board = new HashMap<>();
-        config.forEach(unit -> {
-            addUnit(unit.where, unit.unit);
-        });
     }
 
     public void move(GbgUnit unit, Coordinate from, Coordinate to) {
+            tryAddUnit(to, unit);
         removeUnit(from, unit);
-        addUnit(to, unit);
     }
 
+
+    /*
+     * no units at src(where)
+     *
+     */
     public void addUnit(Coordinate where, GbgUnit unit) {
         Collection<GbgUnit> previous = board.get(where);
         if (previous == null)
@@ -36,10 +37,42 @@ public class Board implements GbgBoard {
         board.put(where, previous);
     }
 
+    public void tryAddUnit(Coordinate where, GbgUnit unit) {
+        if (RuleEngine.getRuleEngine().validatePlacement(where, unit, false))
+            board.put(where, Arrays.asList(unit));
+        else
+            throw new GbgInvalidMoveException("Can't add unit");
+    }
+
+    public void setUnit(Coordinate where, GbgUnit unit) {
+        if (RuleEngine.getRuleEngine().validatePlacement(where, unit, true))
+            board.put(where, Arrays.asList(unit));
+        else
+            throw new GbgInvalidMoveException("Can't add unit");
+    }
+
+    //for stacking at start of game
+    public void addUnits(List<UnitInitializer> config, boolean start) {
+        config.forEach(unit -> {
+            if (start) //enable stack only at start
+                addUnit(unit.where, unit.unit);
+            else
+                tryAddUnit(unit.where, unit.unit);
+        });
+    }
+
     private void removeUnit(Coordinate where, GbgUnit unit) {
-        Collection<GbgUnit> units = board.get(where);
-        if (units != null && units.contains(unit))
+        if(board.get(where) == null)
+            throw new GbgInvalidMoveException("nothing to remove");
+
+        Collection<GbgUnit> units = new LinkedList(board.get(where));
+        if (units.contains(unit))
             units.remove(unit);
+
+        if(units.size() == 0)
+            board.put(where, null);
+        else
+            board.put(where, units);
     }
 
     public Collection<GbgUnit> getUnitsAt(Coordinate where) {
@@ -49,7 +82,7 @@ public class Board implements GbgBoard {
 
     public Coordinate getUnitLocation(GbgUnit unit) {
         for (Coordinate coord : board.keySet()) {
-            if (board.get(coord).contains(unit))
+            if (board.get(coord) != null && board.get(coord).contains(unit))
                 return coord;
         }
 
@@ -58,7 +91,7 @@ public class Board implements GbgBoard {
 
     public GbgUnit findUnit(GbgUnit unit) {
         for (Collection<GbgUnit> set : board.values()) {
-            if (set.contains(unit)) {
+            if (set != null && set.contains(unit)) {
                 List<GbgUnit> helper = set.stream().collect(Collectors.toList());
                 return helper.get(helper.indexOf(unit));
             }
@@ -70,12 +103,16 @@ public class Board implements GbgBoard {
      * After each turn, use this method to reset tracking of changed direction
      */
     public void resetFacingChanged() {
-        board.values().forEach(set -> {
-            set.forEach(unit -> ((GbgUnitImpl) unit).setFacingChanged(false));
-        });
+        try {
+            board.values().forEach(set -> {
+                set.forEach(unit -> ((GbgUnitImpl) unit).setFacingChanged(false));
+            });
+        }catch (NullPointerException e){
+
+        }
     }
 
-    public static Collection<Coordinate> getAdjacentSquares(Coordinate where) {
+    public static List<Coordinate> getAdjacentSquares(Coordinate where) {
         List<Coordinate> coordinates = new LinkedList<>();
         //shift left
         try {
@@ -136,4 +173,68 @@ public class Board implements GbgBoard {
         return coordinates;
     }
 
+    public Collection<Coordinate> getZoneOfControl(GbgUnit unit) {
+        Coordinate where = getUnitLocation(unit);
+        switch (unit.getFacing()) {
+            case NORTH:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1),//NW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1)); //NE
+            case NORTHEAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1), //NE
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY())); //e
+            case EAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY()), //E
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() - 1), //NE
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTHEAST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY()), //E
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTH:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1), //SW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() + 1, where.getY() + 1)); //SE
+            case SOUTHWEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1), //SW
+                        CoordinateImpl.makeCoordinate(where.getX(), where.getY() + 1), //S
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case WEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() + 1), //SW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1), //NW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case NORTHWEST:
+                return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1), //NW
+                        CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY())); //W
+            case NONE:
+                break;
+        }
+
+        throw new IllegalArgumentException("Unable to get zone of control");
+    }
+
+    /**
+     * need to remove all stacks on board at the end of every move step
+     */
+    public void removeStacks(){
+        Set<Coordinate> keys =  new HashSet<>(board.keySet());
+        for(Coordinate key : keys){
+            if(board.get(key).size() > 1)
+                board.remove(key);
+        }
+    }
+
+    public List<GbgUnit> getAllUnits(ArmyID army){
+        List<GbgUnit> result = new LinkedList<>();
+        for(Collection<GbgUnit> units : board.values())
+            result.addAll(units.stream().filter(unit -> unit.getArmy() == army).collect(Collectors.toList()));
+
+        return result;
+    }
+
+    public void clear(){
+        board.clear();
+    }
 }

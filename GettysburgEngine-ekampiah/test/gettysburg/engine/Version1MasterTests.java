@@ -24,6 +24,7 @@ import gettysburg.common.exceptions.*;
 import student.gettysburg.engine.common.Board;
 import student.gettysburg.engine.common.CoordinateImpl;
 import student.gettysburg.engine.common.GettysburgEngine;
+import student.gettysburg.engine.utility.configure.BattleOrder;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -46,9 +47,12 @@ public class Version1MasterTests {
     public void setup() {
         game = makeGame();
         try {
-            gamble = game.getUnit("Gamble", UNION);
-            devin = game.getUnit("Devin", UNION);
-            heth = game.getUnit("Heth", CONFEDERATE);
+            gamble = BattleOrder.getUnionBattleOrder().stream()
+                    .filter(unit -> unit.unit.getLeader().equals("Gamble")).findFirst().get().unit;
+            devin = BattleOrder.getUnionBattleOrder().stream()
+                    .filter(unit -> unit.unit.getLeader().equals("Devin")).findFirst().get().unit;
+            heth = BattleOrder.getConfederateBattleOrder().stream()
+                    .filter(unit -> unit.unit.getLeader().equals("Heth")).findFirst().get().unit;
         } catch (Exception e) {
             if (!getUnit) {
                 getUnit = true;
@@ -166,7 +170,7 @@ public class Version1MasterTests {
         assertEquals(1, game.getTurnNumber());
     }
 
-    @Test
+
     public void endOfGameUnionWins() {
         game.endStep();
         game.endStep();
