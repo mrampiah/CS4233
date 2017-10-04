@@ -6,7 +6,7 @@
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
 // * http://www.eclipse.org/legal/epl-v10.html
-// * 
+// *
 // * Copyright ©2016 Gary F. Pollice
 // *******************************************************************************/
 //
@@ -40,7 +40,7 @@
 //		devin = game.getUnit("Devin", UNION);
 //		heth = game.getUnit("Heth", CONFEDERATE);
 //	}
-//	
+//
 //	// Initial setup tests taken as is from Version 1 tests
 //	@Test
 //	public void gameTurnIsOneOnInitializedGame()
@@ -79,7 +79,7 @@
 //	{
 //		assertEquals(SOUTH, game.getUnitFacing(devin));
 //	}
-//	
+//
 //	// Game step and turn tests
 //	@Test
 //	public void unionBattleFollowsUnionMove()
@@ -158,14 +158,14 @@
 //		game.moveUnit(heth, makeCoordinate(8, 8), makeCoordinate(10, 8));
 //		assertEquals(heth, game.getUnitsAt(makeCoordinate(10, 8)).iterator().next());
 //	}
-//	
+//
 //	@Test
 //	public void devinMovesSouthUsingANonStandardCoordinate()
 //	{
 //		game.moveUnit(devin, new TestCoordinate(13, 9), makeCoordinate(13, 11));
 //		assertEquals(makeCoordinate(13, 11), game.whereIsUnit(devin));
 //	}
-//	
+//
 //	// Tests requiring the test double
 //	@Test
 //	public void stackedEntryUnitIsAsCorrectLocation()
@@ -185,7 +185,7 @@
 //	    game.endStep();  // step -> UBATTLE
 //	    assertNull(game.getUnitsAt(makeCoordinate(22, 22)));
 //	}
-//	
+//
 //	@Test
 //	public void hethDefeatsDevin()
 //	{
@@ -204,7 +204,7 @@
 //class TestCoordinate implements Coordinate
 //{
 //	private int x, y;
-//	
+//
 //	/**
 //	 * @return the x
 //	 */

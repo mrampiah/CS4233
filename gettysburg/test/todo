@@ -1,0 +1,19 @@
+* game creation
+    - Factory.makeGame should not return null       PASS
+    - turn = 1                                      PASS
+    - units on board
+         - heth
+         - gamble
+         - devin
+         - reynolds
+         - wadsworth
+         - robinson
+         - rowley
+    - gameStep == UMOVE
+    -
+
+
+***coordinate
+    *distanceTo
+        - (1, 1) to (1, 4) = 3          PASS
+        - (5, 8) to (10, 20) = 12       PASS

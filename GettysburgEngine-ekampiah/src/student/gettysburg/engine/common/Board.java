@@ -168,8 +168,6 @@ public class Board implements GbgBoard {
         } catch (GbgInvalidCoordinateException ex) {
 
         }
-
-
         return coordinates;
     }
 
