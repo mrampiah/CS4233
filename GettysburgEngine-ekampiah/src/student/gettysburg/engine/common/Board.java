@@ -173,7 +173,7 @@ public class Board implements GbgBoard {
 
     public Collection<Coordinate> getZoneOfControl(GbgUnit unit) {
         Coordinate where = getUnitLocation(unit);
-        switch (unit.getFacing()) {
+        switch (unit.getFacing()) { //todo: refactor using pattern from tests
             case NORTH:
                 return Arrays.asList(CoordinateImpl.makeCoordinate(where.getX() - 1, where.getY() - 1),//NW
                         CoordinateImpl.makeCoordinate(where.getX(), where.getY() - 1), //N

@@ -2,13 +2,13 @@ package model;
 
 import gettysburg.common.Coordinate;
 import gettysburg.common.Direction;
+import gettysburg.common.GbgUnit;
 import gettysburg.common.exceptions.GbgInvalidCoordinateException;
 import gettysburg.common.exceptions.GbgInvalidMoveException;
 import util.BFS;
 import validators.LocationValidators;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GameCoordinate implements Coordinate {
     private int x, y;
@@ -94,8 +94,8 @@ public class GameCoordinate implements Coordinate {
         return y;
     }
 
-    public List<Coordinate> getNeighbors() {
-        List<Coordinate> neighbors = new LinkedList<>();
+    public Collection<Coordinate> getNeighbors() {
+        Collection<Coordinate> neighbors = new HashSet<>();
         //shift left
         try {
             Coordinate W = GameCoordinate.makeCoordinate(x - 1, y);
@@ -153,16 +153,157 @@ public class GameCoordinate implements Coordinate {
         return neighbors;
     }
 
+    public Collection<Coordinate> getZoneOfControl(GbgUnit unit){
+        GameCoordinate N = null, NW = null, NE = null, E = null, SE = null, S = null, SW = null, W = null;
+        try{
+             NW = GameCoordinate.makeCoordinate(x - 1, y - 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            N = GameCoordinate.makeCoordinate(x, y - 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            NE = GameCoordinate.makeCoordinate(x + 1, y - 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            E = GameCoordinate.makeCoordinate(x + 1, y);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            SE = GameCoordinate.makeCoordinate(x + 1, y + 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            S = GameCoordinate.makeCoordinate(x , y + 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            SW = GameCoordinate.makeCoordinate(x - 1, y + 1);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+        try{
+            W = GameCoordinate.makeCoordinate(x - 1, y);
+        }catch (GbgInvalidCoordinateException ex){
+            //suppress
+        }
+
+        Collection<Coordinate> active = new HashSet<>();
+        switch (unit.getFacing()) {
+            case NORTH:
+                if(NW != null)
+                    active.add(NW);
+
+                if(N != null)
+                    active.add(N);
+
+                if(NE != null)
+                    active.add(NE);
+
+                return active;
+            case NORTHEAST:
+                if(NE != null)
+                active.add(NE);
+
+                if(N != null)
+                    active.add(N);
+
+                if(E != null)
+                    active.add(E);
+
+                return active;
+            case EAST:
+                if(E != null)
+                    active.add(E);
+
+                if(NE != null)
+                    active.add(NE);
+
+                if(SE != null)
+                    active.add(SE);
+
+                return active;
+            case SOUTHEAST:
+                if(E != null)
+                active.add(E);
+
+                if(S != null)
+                    active.add(S);
+
+                if(SE != null)
+                    active.add(SE);
+
+                return active;
+            case SOUTH:
+                if(SW != null)
+                active.add(SW);
+
+                if(S != null)
+                    active.add(S);
+
+                if(SE != null)
+                    active.add(SE);
+
+                return active;
+            case SOUTHWEST:
+                if(SW != null)
+                    active.add(SW);
+
+                if(S != null)
+                    active.add(S);
+
+                if(W != null)
+                    active.add(W);
+
+                return active;
+            case WEST:
+                if(SW != null)
+                    active.add(SW);
+
+                if(NW != null)
+                    active.add(NW);
+
+                if(W != null)
+                    active.add(W);
+
+                return active;
+            case NORTHWEST:
+                if(N != null)
+                    active.add(N);
+
+                if(NW != null)
+                    active.add(NW);
+
+                if(W != null)
+                    active.add(W);
+
+                return active;
+            case NONE:
+                break;
+        }
+
+        return null;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if(o == null) return false;
         if (this == o) return true;
         if(!(o instanceof Coordinate)) return false;
 
-        GameCoordinate that = (GameCoordinate) o;
+        Coordinate that = (Coordinate) o;
 
-        if (x != that.x) return false;
-        return y == that.y;
+        if (x != that.getX()) return false;
+        return y == that.getY();
     }
 
     @Override
@@ -170,5 +311,10 @@ public class GameCoordinate implements Coordinate {
         int result = x;
         result = 31 * result + y;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", x, y);
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
 import gettysburg.common.*;
+import util.UnitInitializer;
 
 public class Unit implements GbgUnit {
     private ArmyID armyID;
@@ -54,6 +55,16 @@ public class Unit implements GbgUnit {
         return new Unit(armyID, combatFactor, movementFactor, facing, leader, unitSize, unitType);
     }
 
+    public static Unit makeUnit(GbgUnit unit){
+        return new Unit(unit.getArmy(), unit.getCombatFactor(), unit.getMovementFactor(), unit.getFacing(),
+                unit.getLeader(), unit.getSize(), unit.getType());
+    }
+
+    public static Unit makeUnit(UnitInitializer init){
+        return new Unit(init.unit.getArmy(), init.unit.getCombatFactor(), init.unit.getMovementFactor(), init.unit.getFacing(),
+                init.unit.getLeader(), init.unit.getSize(), init.unit.getType());
+    }
+
     @Override
     public UnitType getType() {
         return unitType;
@@ -82,5 +93,33 @@ public class Unit implements GbgUnit {
     @Override
     public String getLeader() {
         return leader;
+    }
+
+    @Override
+    public Direction getFacing() {
+        return facing;
+    }
+
+    @Override
+    public void setFacing(Direction facing) {
+        this.facing = facing;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Unit)) return false;
+
+        Unit unit = (Unit) o;
+
+        if (armyID != unit.armyID) return false;
+        return leader != null ? leader.equals(unit.leader) : unit.leader == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = armyID != null ? armyID.hashCode() : 0;
+        result = 31 * result + (leader != null ? leader.hashCode() : 0);
+        return result;
     }
 }

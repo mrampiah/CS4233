@@ -1,19 +1,65 @@
 * game creation
-    - Factory.makeGame should not return null       PASS
-    - turn = 1                                      PASS
+    - Factory.makeGame should not return null (PASS)
+    - turn = 1 (PASS)
     - units on board
-         - heth
-         - gamble
-         - devin
-         - reynolds
-         - wadsworth
-         - robinson
-         - rowley
-    - gameStep == UMOVE
-    -
+         - heth (PASS)
+         - gamble (PASS)
+         - devin (PASS)
+         - reynolds (PASS)
+         - wadsworth (PASS)
+         - robinson (PASS)
+         - rowley (PASS)
+    - gameStep == UMOVE (PASS)
+
 
 
 ***coordinate
     *distanceTo
-        - (1, 1) to (1, 4) = 3          PASS
-        - (5, 8) to (10, 20) = 12       PASS
+        - (1, 1) to (1, 4) = 3  (PASS)
+        - (5, 8) to (10, 20) = 12 (PASS)
+
+
+
+***game sequence
+    *move
+    - umove at start  (PASS)
+    - can't move unit of wrong color (PASS)
+    - can't move unit from wrong location (PASS)
+    - can't move unit beyond movement factor (PASS)
+    - can't change face twice in move (PASS)
+    - can't move unit twice in one turn (PASS)
+    - can't move through zone of control
+        - gamble(11, 11) to (11, 15) with heth at (10, 13)E and hill at (12, 13)W fails
+    - can move to zone of control
+        - gamble(11, 11) to (11, 15) with heth at (10, 14) passes (PASS)
+
+  * step
+   *first turn
+   - if any stacks, remove and continue  (PASS)
+   *else (if move)
+   - check for no stacks (PASS)
+   *else (if battle)
+   - check if getBattlesToResolve is called
+   - all units participated
+
+ * battle
+ - can't attack with defending unit (PASS)
+ - can't attack an attacking unit (PASS)
+ - gamble (4, 5) can attack heth[3, 4 facing south] on first turn (PASS)
+ - unit can't participate twice (PASS)
+ - unit can't attack itself (PASS)
+ - can't have empty attacking or defending sides (PASS)
+
+
+ * possible paths
+ - (11, 11) to (11, 12) with movement factor 1 = 1
+
+
+- step changes
+- turn changes
+- new movement rules
+- new battle rules
+
+
+
+

@@ -13,12 +13,14 @@ public class BFS {
     private static Set<Coordinate> settled, unsettled;
     private static Map<Coordinate, Coordinate> predecessors;
     private static final int EDGE_COST = 1;
+    private static Coordinate src;
 
     public static void evaluate(Coordinate src){
         settled = new HashSet<>();
         unsettled = new HashSet<>();
         distance = new HashMap<>();
         predecessors = new HashMap<>();
+        BFS.src = src;
 
         distance.put(src, 0);
         unsettled.add(src);
@@ -49,14 +51,8 @@ public class BFS {
         return winner;
     }
 
-    private static List<Coordinate> getNeighbors(Coordinate src){
-        List<Coordinate> neighbors = GameCoordinate.makeCoordinate(src).getNeighbors();
-
-        return neighbors;
-    }
-
     private static void evaluateNeighbors(Coordinate coord){
-        List<Coordinate> neighbors = GameCoordinate.makeCoordinate(coord).getNeighbors();
+        Collection<Coordinate> neighbors = GameCoordinate.makeCoordinate(coord).getNeighbors();
 
         for(Coordinate coordinate : neighbors.stream()
                 .filter(c -> !settled.contains(c)).collect(Collectors.toList())){
@@ -83,7 +79,7 @@ public class BFS {
     public static List<Coordinate> shortestPath(Coordinate coord){
         List<Coordinate> path = new LinkedList<>();
         Coordinate step = coord;
-        if(predecessors.get(step) == null){
+        if(predecessors.get(step) == null && !step.equals(src)){
             return null;
         }
         path.add(step);
